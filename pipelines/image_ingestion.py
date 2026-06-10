@@ -172,7 +172,7 @@ def parse_vlm_json(text):
 
 
 def extract_caption(llm):
-    with open("image_metadata.json", "r", encoding="utf-8") as f:
+    with open(f"{METADATA_DIR}image_metadata.json", "r", encoding="utf-8") as f:
         data = json.load(f)
 
 
@@ -262,7 +262,7 @@ def extract_caption(llm):
 def ingestion():
     
     with open(
-        "image_metadata_final.json",
+        f"{METADATA_DIR}/image_metadata_final.json",
         "r",
         encoding="utf-8"
     ) as f:
