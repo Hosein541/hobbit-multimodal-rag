@@ -66,11 +66,11 @@ question = st.chat_input(
 
 if question:
     # llm = OllamaLLM(model="gemma3:4b", temperature=0)
-    llm = ChatGoogleGenerativeAI(
-            model="gemini-3.1-flash-lite",
-            google_api_key="AIzaSyCpKQdGGbxKClS-2YcCHIF1YVPYt5aOSD4",
-            temperature=0.1,
-        )
+    # llm = ChatGoogleGenerativeAI(
+    #         model="gemini-3.1-flash-lite",
+    #         google_api_key="------------------------",
+    #         temperature=0.1,
+    #     )
     st.session_state.messages.append(
         {
             "role": "user",
