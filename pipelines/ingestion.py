@@ -1,5 +1,5 @@
-from ingestion.image_ingestion import build_image_collection
-from ingestion.text_ingestion import build_text_collection
+from pipelines.image_ingestion import build_image_collection
+from pipelines.text_ingestion import build_text_collection
 
 
 def create_db(llm):

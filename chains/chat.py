@@ -1,4 +1,4 @@
-from ingestion.ingestion import build_db
+from pipelines.ingestion import create_db
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -122,9 +122,9 @@ def generate_answer(question, llm, retriever):
 
 
 
-def get_answers(llm, question):
+def get_answers(llm, question, image_retriever, text_retriever):
    
-   image_retriever, text_retriever = build_db()
+#    image_retriever, text_retriever = create_db(llm)
 
    text_result, context, metadata = generate_answer(question, llm, text_retriever)
 
@@ -134,4 +134,4 @@ def get_answers(llm, question):
    
 
    return {"text_answer": text_result,
-           "img_result": img_results.metadata["image_path"]}
+           "img_result": img_results}

@@ -94,7 +94,9 @@ def build_text_collection():
     )
 
     embeddings = OllamaEmbeddings(
-        model="embeddinggemma"
+        model="embeddinggemma",
+        base_url="http://localhost:11434",  # default, change if needed
+
     )
     # -------------------------------------
     # Load Existing DB

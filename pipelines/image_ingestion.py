@@ -172,7 +172,7 @@ def parse_vlm_json(text):
 
 
 def extract_caption(llm):
-    with open(f"{METADATA_DIR}image_metadata.json", "r", encoding="utf-8") as f:
+    with open(f"{METADATA_DIR}/image_metadata.json", "r", encoding="utf-8") as f:
         data = json.load(f)
 
 
@@ -206,8 +206,9 @@ def extract_caption(llm):
 
         try:
             out = chain.invoke(item)
+            result=out["result"]
             print(f"item number\t{i}")
-            print(f"output\t: {out["result"]}")
+            print(f"output\t: {result}")
             print("----------------------")
             i += 1
             item["vlm_raw"] = out["result"]
@@ -314,7 +315,9 @@ def build_image_collection(llm):
     )
 
     embeddings = OllamaEmbeddings(
-        model="embeddinggemma"
+        model="embeddinggemma",
+        base_url="http://localhost:11434",  # default, change if needed
+
     )
     # -------------------------------------
     # Load Existing DB
@@ -362,7 +365,7 @@ def build_image_collection(llm):
 
     retriever = vectorstore.as_retriever(
         search_kwargs={
-            "k": 1
+            "k": 2
         }
     )
 
