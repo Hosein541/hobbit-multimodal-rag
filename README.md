@@ -10,49 +10,93 @@ The project combines textual knowledge from the original book with illustrations
 
 ## Features
 
-* Text-based RAG pipeline using the original *The Hobbit* book
-* Image retrieval from illustrated editions
-* Text extraction from visual pages
-* Multimodal retrieval combining text and image context
+* Text-based RAG pipeline built from the original *The Hobbit*
+* Multimodal retrieval using both textual and visual information
+* Automatic extraction of illustrations from visual editions
+* LLM-generated visual descriptions enriched with adjacent page context
+* Semantic image retrieval with similarity filtering
 * Gemini-powered question answering
-* Streamlit chat interface
-* Persistent vector storage with ChromaDB
-* Query expansion using Multi-Query Retrieval
+* Streamlit chat interface with persistent conversation history
+* ChromaDB vector storage for text and image metadata
+* Multi-query retrieval for improved recall
+
+---
+
+## Dataset
+
+The knowledge base is built from two complementary sources:
+
+1. The original text of *The Hobbit*
+2. Illustrated editions containing visual depictions of characters, locations, and events
+
+For each illustration page:
+
+* Images are extracted directly from the source document
+* Nearby textual content is collected as contextual information
+* An LLM generates a structured visual description using both the image and its surrounding text
+* Generated descriptions are embedded and indexed for retrieval
+* Image references are stored as metadata for later visualization
+
+This approach creates stronger connections between the narrative and the illustrations compared to traditional image captioning pipelines.
+
+---
 
 ## Architecture
 
 ```text
-User Question
-      │
-      ├── Text Retriever (ChromaDB)
-      │
-      ├── Image Retriever (ChromaDB)
-      │
-      └── Similarity Filtering
-                │
-                ▼
-         Retrieved Context
-                │
-                ▼
-          Gemini LLM
-                │
-                ▼
-        Answer + Images
+                 ┌─────────────────┐
+                 │ User Question   │
+                 └────────┬────────┘
+                          │
+          ┌───────────────┴───────────────┐
+          │                               │
+          ▼                               ▼
+
+ ┌─────────────────┐           ┌─────────────────┐
+ │ Text Retriever  │           │ Image Retriever │
+ │    ChromaDB     │           │    ChromaDB     │
+ └────────┬────────┘           └────────┬────────┘
+          │                             │
+          └───────────────┬─────────────┘
+                          ▼
+
+               Similarity Filtering
+
+                          ▼
+
+                Retrieved Context
+
+                          ▼
+
+                    Gemini LLM
+
+                          ▼
+
+               Answer + Images
 ```
 
-## Dataset
+---
 
-The knowledge base is built from two sources:
+## Image Processing Pipeline
 
-1. The original text of *The Hobbit*
-2. Illustrated editions containing visual depictions of scenes, characters, and locations
+```text
+Illustrated Page
+       │
+       ├── Image Extraction
+       │
+       └── Adjacent Text Extraction
+                    │
+                    ▼
+              LLM Description
+                    │
+                    ▼
+                Embeddings
+                    │
+                    ▼
+                 ChromaDB
+```
 
-During ingestion:
-
-* texts extracted from illustrated pages
-* Image descriptions are generated
-* Text chunks are embedded and stored in ChromaDB
-* Image metadata is indexed for retrieval
+Instead of relying solely on image captioning or OCR, the system leverages surrounding textual context to generate richer visual descriptions aligned with the story narrative.
 
 ## Tech Stack
 
