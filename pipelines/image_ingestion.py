@@ -5,19 +5,14 @@ import json
 import fitz
 import base64
 from pathlib import Path
-from langchain_ollama import OllamaLLM
 from langchain_ollama import OllamaEmbeddings
 from langchain_core.documents import Document
 from langchain_community.vectorstores import Chroma
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 
-
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import BOOK_DIR, METADATA_DIR, IMAGE_DIR, CHROMA_DIR
-
-
-
 
 
 
@@ -348,21 +343,6 @@ def build_image_collection(llm):
             persist_directory=persist_directory,
             collection_name = "hobbit_images"
         )
-
-    
-    # get_metadata()
-# 
-    # extract_caption(llm)
-# 
-    # docs = ingestion()
-# 
-    # vectorstore = Chroma.from_documents(
-        # documents=docs,
-        # embedding=embeddings,
-        # collection_name="hobbit_images",
-        # persist_directory=f"{CHROMA_DIR}/chroma_db"
-    # )
-
     
     retriever = vectorstore.as_retriever(
         search_kwargs={
