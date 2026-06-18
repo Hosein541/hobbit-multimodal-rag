@@ -45,17 +45,6 @@ if gemini_key and start_button:
 
 
 # =========================================
-# Initialize Retrievers
-# =========================================
-
-
-
-# embed_llm = OllamaLLM(model="gemma3:4b", temperature=0)
-
-# result = text_retriever.invoke("hello")
-# st.markdown(result)
-
-# =========================================
 # Chat History
 # =========================================
 
@@ -67,7 +56,6 @@ for msg in st.session_state.messages:
 
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
-        # st.markdown(msg["path"])
 
         if msg["role"] == "assistant" and msg.get("images"):
 
@@ -94,8 +82,6 @@ question = st.chat_input(
 
 
 if question:
-    # llm = OllamaLLM(model="gemma3:4b", temperature=0)
-    # llm = st.session_state.llm
     st.session_state.messages.append(
         {
             "role": "user",
@@ -127,14 +113,12 @@ if question:
             st.divider()
             st.subheader("Retrieved Images")
 
-            # cols = st.columns(2)
             path = []
             for i in image_paths:
-                # st.markdown(i.metadata["image_id"])
                 path.append(i.metadata["image_id"])
 
-            num_images = len(path)  # فرض کنید path لیستی از شناسه‌های تصاویر است
-            cols = st.columns(num_images)  # به تعداد تصاویر ستون بسازید
+            num_images = len(path)  
+            cols = st.columns(num_images)
 
             for idx, img_id in enumerate(path):
                 with cols[idx]:
