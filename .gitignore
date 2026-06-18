@@ -5,3 +5,4 @@ __pycache__/
 venv/
 
 first/
+test_img.py

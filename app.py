@@ -67,6 +67,21 @@ for msg in st.session_state.messages:
 
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
+        # st.markdown(msg["path"])
+
+        if msg["role"] == "assistant" and msg.get("images"):
+
+            st.divider()
+            st.subheader("Retrieved Images")
+
+            cols = st.columns(len(msg["images"]))
+
+            for idx, img_id in enumerate(msg["images"]):
+                with cols[idx]:
+                    st.image(
+                        Path(f"data/images/{img_id}.jpeg"),
+                        width="stretch"
+                    )
 
 
 # =========================================
@@ -103,12 +118,9 @@ if question:
             )
             answer = results["text_answer"]
             image_paths = results["img_result"]
-            # image_paths = st.session_state.img_ret.invoke("gandalf")
-            # answer = "hello "
-            # image_paths = IMAGE_DIR / "page_35_img_0.jpeg"
+
         st.markdown(answer)
-        # st.markdown(image_paths)
-        # st.markdown(text_ret)
+
 
         if image_paths:
 
@@ -127,48 +139,11 @@ if question:
             for idx, img_id in enumerate(path):
                 with cols[idx]:
                     st.image(Path(f"data/images/{img_id}.jpeg"))
-            # try:
-            #     with cols[0]:
-            #         st.image(Path(f"data/images/{path[0]}.jpeg"))
-            #     with cols[1]:
-            #         st.image(Path(f"data/images/{path[1]}.jpeg"))
-            # except Exception as e:
-            #     st.warning(f"خطا در نمایش تصاویر: {e}")
-            # with cols[10 % len(cols)]:
-            #     try:
-            #         st.image(
-            #             Path(f"data/images/{path[0]}.jpeg"),
-            #                             #   page_147_img_0
-            #             # Path("data/images/page_147_img_0.jpeg"),
-            #             # use_container_width=True
-            #         )
-            #         st.image(
-            #             Path(f"data/images/{path[1]}.jpeg"),
-            #                             #   page_147_img_0
-            #             # Path("data/images/page_147_img_0.jpeg"),
-            #             # use_container_width=True
-            #         )
-            #     except:
-            #         pass 
-
-            # for idx, image_path in enumerate(image_paths):
-
-            #     with cols[idx % len(cols)]:
-
-            #         try:
-            #             st.image(
-            #                 image_path,
-            #                 use_container_width=True
-            #             )
-            #         except Exception as e:
-
-            #             st.warning(
-            #                 f"Cannot load image:\n{image_path}"
-            #             )
 
     st.session_state.messages.append(
         {
             "role": "assistant",
-            "content": answer
+            "content": answer,
+            "images" : path
         }
     )
