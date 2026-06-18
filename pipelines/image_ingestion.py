@@ -363,11 +363,12 @@ def build_image_collection(llm):
         # persist_directory=f"{CHROMA_DIR}/chroma_db"
     # )
 
+    
     retriever = vectorstore.as_retriever(
         search_kwargs={
             "k": 2
         }
     )
 
-    return retriever
+    return retriever, vectorstore
 

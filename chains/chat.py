@@ -73,7 +73,6 @@ def retrieve_and_rag(question,  sub_question_generator_chain, retriever, llm):
     - Do not use outside knowledge.
     - If the answer cannot be determined from the context, say "I don't know based on the provided context."
     - Keep the answer concise and accurate.
-    - Use no more than four sentences.
     - When possible, mention relevant characters, locations, or events explicitly.
     """),
 
@@ -155,16 +154,36 @@ def generate_answer(question, llm, retriever):
 
 
 
-def get_answers(llm, question, image_retriever, text_retriever):
+def get_answers(llm, question, image_vectorstore, text_retriever):
    
 #    image_retriever, text_retriever = create_db(llm)
 
-   text_result, context, metadata = generate_answer(question, llm, text_retriever)
-
-   img_results = image_retriever.invoke(
-    question
+    text_result, context, metadata = generate_answer(question, llm, text_retriever)
+    # text_result = "helloooooooooooooooo"
+#    img_results = image_retriever.invoke(
+    # question
+    # )
+    img_results = image_vectorstore.similarity_search_with_score(
+    question,
+    k=4
     )
-   
 
-   return {"text_answer": text_result,
-           "img_result": img_results}
+    THRESHOLD = 1.44
+
+    img_result = []
+
+    for doc, score in img_results:
+        print(f"retrieved image score:\t\t{score}")
+        print(f"retrieved image content:\t\t{doc}")
+        print("------------------------")
+
+        if score < THRESHOLD:
+            img_result.append(doc)
+            print(f"retrieved image score:\t\t{score}")
+    
+    MAX_IMAGES = 3
+
+    img_result = img_result[:MAX_IMAGES]
+    # print(img_result)
+    return {"text_answer": text_result,
+           "img_result": img_result}

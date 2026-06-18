@@ -282,7 +282,7 @@ def build_text_collection():
     retriever = vectorstore.as_retriever(
         search_kwargs={"k": 5}
     )
-    ret = retriever.invoke("gandalf")
-    print(f"text retriever:\t\t\t\t{ret}")
+    # ret = retriever.invoke("gandalf")
+    # print(f"text retriever:\t\t\t\t{ret}")
 
     return retriever
