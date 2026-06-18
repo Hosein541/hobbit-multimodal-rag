@@ -23,11 +23,6 @@ st.caption(
     "Text + Image Retrieval powered by Ollama, ChromaDB and LangChain"
 )
 
-
-# =========================================
-# Initialize Retrievers
-# =========================================
-
 @st.cache_resource
 def load_resources(llm):
 
@@ -35,10 +30,27 @@ def load_resources(llm):
 
     return image_retriever, text_retriever
 
-embed_llm = OllamaLLM(model="gemma3:4b", temperature=0)
-text_retriever, image_retriever = load_resources(embed_llm)
-st.session_state.img_ret = image_retriever
-st.session_state.text_ret = text_retriever
+with st.sidebar:
+    st.header("API Keys")
+    gemini_key = st.text_input("Gemini API Key", type="password")
+    model_selection = st.selectbox("Model Selection", ["gemini-3.1-flash-lite", "gemini-3.5-flash", "gemini-3.1-pro-preview"])
+    start_button = st.button("🚀 Generate Initial Analysis", type="primary")
+
+if gemini_key and start_button:
+    st.session_state.llm = ChatGoogleGenerativeAI(model=model_selection, temperature=0.6, google_api_key=gemini_key)
+
+    image_retriever, text_retriever = load_resources(st.session_state.llm)
+    st.session_state.img_ret = image_retriever
+    st.session_state.text_ret = text_retriever
+
+
+# =========================================
+# Initialize Retrievers
+# =========================================
+
+
+
+# embed_llm = OllamaLLM(model="gemma3:4b", temperature=0)
 
 # result = text_retriever.invoke("hello")
 # st.markdown(result)
@@ -68,7 +80,7 @@ question = st.chat_input(
 
 if question:
     # llm = OllamaLLM(model="gemma3:4b", temperature=0)
-    llm = st.session_state.llm
+    # llm = st.session_state.llm
     st.session_state.messages.append(
         {
             "role": "user",
@@ -83,16 +95,16 @@ if question:
 
         with st.spinner("Thinking..."):
 
-            # results = get_answers(
-            #     llm=llm,
-            #     question=question,
-            #     image_retriever=st.session_state.img_ret,
-            #     text_retriever= st.session_state.text_ret
-            # )
-            # answer = results["text_answer"]
-            # image_paths = results["img_result"]
-            image_paths = st.session_state.img_ret.invoke("gandalf")
-            answer = "hello "
+            results = get_answers(
+                llm=st.session_state.llm,
+                question=question,
+                image_vectorstore=st.session_state.img_ret,
+                text_retriever= st.session_state.text_ret
+            )
+            answer = results["text_answer"]
+            image_paths = results["img_result"]
+            # image_paths = st.session_state.img_ret.invoke("gandalf")
+            # answer = "hello "
             # image_paths = IMAGE_DIR / "page_35_img_0.jpeg"
         st.markdown(answer)
         # st.markdown(image_paths)
