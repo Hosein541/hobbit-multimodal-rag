@@ -10,7 +10,6 @@ def split_questions(questions):
   temp = []
   for q in questions:
     if len(q) > 0 :
-    # if len(q) > 0 and q[0] in ["1", "2", "3", "4"]:
       print(f"generated queries:\t\t\t{q}")
       temp.append(q)
 
@@ -92,7 +91,6 @@ def retrieve_and_rag(question,  sub_question_generator_chain, retriever, llm):
     docs = []
     for sub_question in sub_questions:
       retrieved_docs = retriever.invoke(sub_question)
-      # docs.append(retrieved_docs)
       for doc in retrieved_docs:
 
             docs.append(
@@ -149,20 +147,15 @@ def generate_answer(question, llm, retriever):
     )
     result = final_rag_chain.invoke({"context": context, "question": question})
 
-    # response = final_rag_chain.invoke({"context": context, "question": question})
     return result, context, {"logs": logs, "retrieved_chunks": docs}
 
 
 
 def get_answers(llm, question, image_vectorstore, text_retriever):
    
-#    image_retriever, text_retriever = create_db(llm)
 
     text_result, context, metadata = generate_answer(question, llm, text_retriever)
-    # text_result = "helloooooooooooooooo"
-#    img_results = image_retriever.invoke(
-    # question
-    # )
+
     img_results = image_vectorstore.similarity_search_with_score(
     question,
     k=4
@@ -184,6 +177,6 @@ def get_answers(llm, question, image_vectorstore, text_retriever):
     MAX_IMAGES = 3
 
     img_result = img_result[:MAX_IMAGES]
-    # print(img_result)
+
     return {"text_answer": text_result,
            "img_result": img_result}
