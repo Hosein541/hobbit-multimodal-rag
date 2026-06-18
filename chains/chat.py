@@ -9,8 +9,9 @@ def split_questions(questions):
   """Split questions into sub-questions"""
   temp = []
   for q in questions:
-    if len(q) > 0 and q[0] in ["1", "2", "3", "4"]:
-      # print(q)
+    if len(q) > 0 :
+    # if len(q) > 0 and q[0] in ["1", "2", "3", "4"]:
+      print(f"generated queries:\t\t\t{q}")
       temp.append(q)
 
   return temp
@@ -23,10 +24,27 @@ def decomposition(question: str, llm):
     logs.append(
         "[✓] Generating sub queries"
     )
-    template = """You are a helpful assistant that generates multiple sub-questions related to an input question. \n
-    The goal is to break down the input into a set of sub-problems / sub-questions that can be answers in isolation. \n
-    Generate multiple search queries related to: {question} \n
-    Output (3 queries):"""
+    template = """
+    You are an expert retrieval assistant for a knowledge base built from J.R.R. Tolkien's The Hobbit book.
+
+    Your task is to generate multiple search queries that improve retrieval quality from the text collection.
+
+    The collection contains the original text of The Hobbit book.
+
+    When generating queries:
+
+    - Identify important characters, locations, objects, and events.
+    - Include alternative phrasings and synonyms when appropriate.
+    - Expand references and pronouns into explicit entity names whenever possible.
+    - Consider related terms, aliases, and book-specific terminology.
+    - Preserve the original meaning of the user's question.
+    - Generate diverse queries that explore different textual aspects of the question.
+
+    User question:
+    {question}
+
+    Return exactly 3 search queries, one per line, without numbering, explanations, or additional text.
+    """
     prompt_decomposition = ChatPromptTemplate.from_template(template)
 
 
@@ -44,17 +62,32 @@ def retrieve_and_rag(question,  sub_question_generator_chain, retriever, llm):
 
     prompt = ChatPromptTemplate.from_messages([
 
-    ("system", """You are an assistant for question-answering tasks.
-    Use the following pieces of retrieved context to answer the question.
-    If you don't know the answer, just say that you don't know.
-    Use three sentences maximum and keep the answer concise."""),
-        ("human", """Question: {question}
+    ("system", """
+    You are an expert question-answering assistant for J.R.R. Tolkien's The Hobbit book.
 
-    Context: {context}
+    Use only the provided context to answer the user's question.
 
-    Answer:""")
+    Instructions:
 
+    - Base your answer strictly on the retrieved context.
+    - Do not use outside knowledge.
+    - If the answer cannot be determined from the context, say "I don't know based on the provided context."
+    - Keep the answer concise and accurate.
+    - Use no more than four sentences.
+    - When possible, mention relevant characters, locations, or events explicitly.
+    """),
+
+        ("human", """
+    Question:
+    {question}
+
+    Context:
+    {context}
+
+    Answer:
+    """)
     ])
+
     sub_questions, logs = decomposition(question, llm)
     rag_results = []
     docs = []
